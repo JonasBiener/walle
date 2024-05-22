@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arduino Giga Control Example</title>
+</head>
+<body>
+    <h1>Arduino Giga Control Example</h1>
+    <p><button id="btOn" style="background-color: green; border-radius: 100px;">On</button></p>
+    <p><button id="btOff" style="background-color: red; border-radius: 100px;">Off</button></p>
+    <table style="border: 1px solid black;">
+        <tr><td><b>Connected</b></td>
+            <td><b>Service Discovery Completed</b></td></tr>
+        <tr><td id="status_connected">false</td>
+            <td id="status_discovered">false</td></tr>
+    </table>
+    <p><button id="btnConnect" onclick="discoverOrDisconnect()">Connect</button></p>
+    <script src="connection.js"></script>
+    <script src="uicontrol.js"></script>
+</body>
+</html>
