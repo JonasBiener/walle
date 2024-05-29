@@ -7,15 +7,21 @@
 </head>
 <body>
     <h1>Arduino Giga Control Example</h1>
-    <p><button id="btOn" style="background-color: green; border-radius: 100px;">On</button></p>
-    <p><button id="btOff" style="background-color: red; border-radius: 100px;">Off</button></p>
+    <p>
+        <input type="number" name="speed" id="inSpeed">
+        <button id="btSpeed">Update Speed</button>
+    </p>
+    <p>
+        <input type="number" name="direction" id="inDirection">
+        <button id="btDirection">Update Direction</button>
+    </p>
     <table style="border: 1px solid black;">
         <tr><td><b>Connected</b></td>
             <td><b>Service Discovery Completed</b></td></tr>
         <tr><td id="status_connected">false</td>
             <td id="status_discovered">false</td></tr>
     </table>
-    <p><button id="btnConnect" onclick="discoverOrDisconnect()">Connect</button></p>
+    <p><button id="btnConnect">Connect</button></p>
     <script src="connection.js"></script>
     <script src="uicontrol.js"></script>
 </body>

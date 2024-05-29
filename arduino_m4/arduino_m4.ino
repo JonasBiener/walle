@@ -1,49 +1,88 @@
+#include "F:/GitHub/walle/arduino_common/definitions.hpp" // Change according to source-path
+
 #include <RPC.h>
 
-#define LED_GREEN_PIN 2
-#define LED_RED_PIN 3
-#define LED_BLUE_PIN 4
+#include "servos.hpp" 
+#include "motors.hpp" 
+#include "eyes.hpp" 
 
+BLEState ble_state = BLEState::Advertising;
+RobotState robot_state = RobotState::Disconnected;
 
-#define BTSTATE_ADVERTISING 1
-#define BTSTATE_PAIRING 2
-#define BTSTATE_CONNECTED 3
-
-uint8_t led_state = 0;
-uint8_t bt_state = BTSTATE_ADVERTISING;
+int16_t cur_drive_speed = 0;
+int16_t cur_drive_direction = 0;
 
 void setup() {
   RPC.begin();
-  RPC.bind("setLEDState", setLEDState);
-  RPC.bind("setBTState", setBTState);
-  pinMode(LED_GREEN_PIN, OUTPUT);
-  pinMode(LED_RED_PIN, OUTPUT);
-  pinMode(LED_BLUE_PIN, OUTPUT);
-  digitalWrite(LED_RED_PIN, 0);
-  digitalWrite(LED_GREEN_PIN, 0);
-  digitalWrite(LED_BLUE_PIN, 0);
+  RPC.bind("setRobotValue", setRobotValue);
+  pinMode(BLE_STATUS_LED_PIN, OUTPUT);
+  digitalWrite(BLE_STATUS_LED_PIN, 0);
+  pinMode(BLE_PAIR_BUTTON_PIN, INPUT_PULLUP);
+  Servos::init();
+  Motors::init();
+  Eyes::init();
+  Eyes::setState(Eyes::EyeState::RedSolid);
 }
-digi
+
 void loop() { 
-  runLEDThread();
-  runBTThread();
+  runBLEDisconnectButtonThread();
+  runBLEStatusLEDThread();
+  Eyes::update();
 }
 
-void setLEDState(uint8_t state) {
-  led_state = state;
+void setRobotValue(uint8_t robot_value, int16_t data) {
+  switch ((RobotValue) robot_value) {
+    case RobotValue::BLEState:
+      ble_state = (BLEState) data;  
+      RPC.print("BLE State changed to "); /* EXPERIMENTAL */
+      break;
+    case RobotValue::RobotState:
+      robot_state = (RobotState) data; 
+      RPC.print("Robot State changed to "); /* EXPERIMENTAL */
+      break;
+    case RobotValue::DriveSpeed:
+      cur_drive_speed = data;
+      RPC.print("Drive Speed changed to "); /* EXPERIMENTAL */
+    break;
+    case RobotValue::DriveDirection:
+      cur_drive_direction = data;
+      RPC.print("Drive Direcion changed to "); /* EXPERIMENTAL */
+    break;
+  }
+  RPC.println(data); /* EXPERIMENTAL */
+  setEyeStates(); /* EXPERIMENTAL */
 }
 
-void setBTState(uint8_t state) {
-  bt_state = state;
+void runBLEDisconnectButtonThread() {
+  if (!digitalRead(BLE_PAIR_BUTTON_PIN)) {
+    RPC.call("disconnectBLE");
+  }
 }
 
-inline void runLEDThread() {
-  digitalWrite(LED_GREEN_PIN, led_state);
-  digitalWrite(LED_RED_PIN, !led_state);
+void runBLEStatusLEDThread() {
+  if (ble_state == BLEState::Advertising) 
+    digitalWrite(BLE_STATUS_LED_PIN, millis()%1000 < 500);
+  else if (ble_state == BLEState::Connecting) 
+    digitalWrite(BLE_STATUS_LED_PIN, millis()%250 < 125);
+  else if (ble_state == BLEState::Connected) 
+    digitalWrite(BLE_STATUS_LED_PIN, HIGH);
 }
 
-inline void runBTThread() {
-  if (bt_state == BTSTATE_ADVERTISING) digitalWrite(LED_BLUE_PIN, (millis() % 1000) < 500);
-  else if (bt_state == BTSTATE_PAIRING) digitalWrite(LED_BLUE_PIN, (millis() % 250) < 125);
-  else if (bt_state == BTSTATE_CONNECTED) digitalWrite(LED_BLUE_PIN, 1);
+void runDrivingThread() {
+  Motors::drive(cur_drive_speed, cur_drive_direction);
 }
+
+/* EXPERIMENTAL */
+void setEyeStates() {
+  if (robot_state == RobotState::Disconnected)
+    Eyes::setState(Eyes::EyeState::RedSolid);
+  else if (robot_state == RobotState::Authentication)
+    Eyes::setState(Eyes::EyeState::GreenFast);
+  else if (robot_state == RobotState::Running)
+    Eyes::setState(Eyes::EyeState::GreenSolid);
+  else if (robot_state == RobotState::Paused)
+    Eyes::setState(Eyes::EyeState::GreenSlow);
+  else if (robot_state == RobotState::Error)
+    Eyes::setState(Eyes::EyeState::RedFast);
+}
+/* END_EXPERIMENTAL */

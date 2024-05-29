@@ -1,57 +1,46 @@
+#include "F:/GitHub/walle/arduino_common/definitions.hpp" // Change according to source-path
+
 #include <RPC.h>
 #include <ArduinoBLE.h>
 
-BLEService ledService("E5242354-9449-4C07-83AA-55780467604C");
-BLEByteCharacteristic stateCharacteristic("1EB8412D-A87D-45C9-941D-5C3F48C35F4C", BLERead | BLEWrite);
-BLEDescriptor stateCharacteristicDescriptor("098D40A4-F1DB-4719-B418-3D5F714992C8", "LED State");
+void synchronizeRobotValues(RobotValue robot_value, int16_t data) {
+  RPC.call("setRobotValue", (uint8_t) robot_value, data);
+}
 
-// #define BUTTON_PAIR_PIN 5
+#include "bluetoothLE.hpp" // Defines BLE service-structure and characteristics
 
-uint8_t led_state = 0;
+BLEState ble_state = BLEState::Advertising;
+RobotState robot_state = RobotState::Disconnected;
+
+void BluetoothLE::onConnect(BLEDevice central) {
+  Serial.print("Bluetooth® Low Energy connected to central: ");
+  Serial.println(central.address());
+  ble_state = BLEState::Connected;
+  robot_state = RobotState::Running;
+  synchronizeRobotValues(RobotValue::BLEState, (int16_t) ble_state);
+  synchronizeRobotValues(RobotValue::RobotState, (int16_t) robot_state);
+}
+
+void BluetoothLE::onDisconnect(BLEDevice central) {
+  Serial.print("Bluetooth® Low Energy disconnected from central: ");
+  Serial.println(central.address());
+  ble_state = BLEState::Advertising;
+  robot_state = RobotState::Disconnected;
+  synchronizeRobotValues(RobotValue::BLEState, (int16_t) ble_state);
+  synchronizeRobotValues(RobotValue::RobotState, (int16_t) robot_state);
+}
 
 void setup() {
   RPC.begin();
-  Serial.begin(9600);
-  // pinMode(BUTTON_PAIR_PIN, INPUT_PULLUP);
-  RPC.call("setBTState", 2);
-  Serial.println("Starting Bluetooth® Low Energy device...");
-  if (!BLE.begin()) {
-    Serial.println("Starting Bluetooth® Low Energy device failed!");
-    while (1);
-  }
-  BLE.setLocalName("LEDController");
-  BLE.setAdvertisedService(ledService);
-  BLE.setEventHandler(BLEConnected, btConnectHandler);
-  BLE.setEventHandler(BLEDisconnected, btDisconnectHandler);
-  stateCharacteristic.setEventHandler(BLEWritten, ledStateWrittenHandler);
-  stateCharacteristic.addDescriptor(stateCharacteristicDescriptor);
-  stateCharacteristic.setValue(0);
-  ledService.addCharacteristic(stateCharacteristic);
-  BLE.addService(ledService);
-  BLE.advertise();
-  RPC.call("setBTState", 1);
-  Serial.println(("Bluetooth® device active, waiting for connections..."));
+  RPC.bind("disconnectBLE", BluetoothLE::disconnect);
+  Serial.begin(115200);
+  BluetoothLE::init();
+  Serial.println("Bluetooth® Low Energy active, waiting for connections...");
 }
 
 void loop() {
   BLE.poll();
-}
-
-void btConnectHandler(BLEDevice central) {
-  Serial.print("Connected event, central: ");
-  Serial.println(central.address());
-  RPC.call("setBTState", 3);
-}
-
-void btDisconnectHandler(BLEDevice central) {
-  Serial.print("Disconnected event, central: ");
-  Serial.println(central.address());
-  RPC.call("setBTState", 1);
-}
-
-void ledStateWrittenHandler(BLEDevice central, BLECharacteristic characteristic) {
-  uint8_t value = stateCharacteristic.value();
-  Serial.print("Characteristic event, written: ");
-  Serial.println(value);
-  RPC.call("setLEDState", value);
+  if (RPC.available()) {
+    Serial.print((char) RPC.read());
+  }
 }
