@@ -2,27 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arduino Giga Control Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <link id="favicon" rel="shortcut icon" href="walleActive.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    <title>WALL-E - RoCCI e.V.</title>
 </head>
 <body>
-    <h1>Arduino Giga Control Example</h1>
-    <p>
-        <input type="number" name="speed" id="inSpeed">
-        <button id="btSpeed">Update Speed</button>
-    </p>
-    <p>
-        <input type="number" name="direction" id="inDirection">
-        <button id="btDirection">Update Direction</button>
-    </p>
-    <table style="border: 1px solid black;">
-        <tr><td><b>Connected</b></td>
-            <td><b>Service Discovery Completed</b></td></tr>
-        <tr><td id="status_connected">false</td>
-            <td id="status_discovered">false</td></tr>
-    </table>
-    <p><button id="btnConnect">Connect</button></p>
-    <script src="connection.js"></script>
-    <script src="uicontrol.js"></script>
+    <dialog id="connectDialog">
+        <img src="logo.png" alt="RoCCI e.V." height="50em">
+        <h1>WALL-E</h1>
+        <p><span id="connectStatus">Disconnected</span></p>
+        <p><button id="connectButton">Connect</button></p>
+    </dialog>
+
+    <div id="content" class="blurred">
+        <h1>WALL-E Control Example</h1>
+        <p><button id="disconnectButton">Disconnect</button></p>
+        <p>Servo:</p> 
+        <p><input type="range" name="speed" id="speedInput" min="0" max="180" value="90"></p>
+        <p id="speedValue">0.0</p>
+    </div>
+
+    <!--<script src="control.js" type="module"></script>-->
+    <script src="interface.js" type="module"></script>
 </body>
 </html>

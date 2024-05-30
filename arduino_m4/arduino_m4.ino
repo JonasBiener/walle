@@ -1,4 +1,4 @@
-#include "F:/GitHub/walle/arduino_common/definitions.hpp" // Change according to source-path
+#include "C:/Users/Jonas/Documents/GitHub/walle/arduino_common/definitions.hpp" // Change according to source-path
 
 #include <RPC.h>
 
@@ -42,6 +42,7 @@ void setRobotValue(uint8_t robot_value, int16_t data) {
       break;
     case RobotValue::DriveSpeed:
       cur_drive_speed = data;
+      Servos::write(Servos::TURN_HEAD, max(min(data, 180), 0));
       RPC.print("Drive Speed changed to "); /* EXPERIMENTAL */
     break;
     case RobotValue::DriveDirection:

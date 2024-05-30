@@ -1,0 +1,11 @@
+dialog::backdrop {
+    backdrop-filter: brightness(50%) blur(10px) ;
+}
+
+input[type="range"] {
+    width: 50vw;
+}
+
+.error {
+    color: red;
+}
