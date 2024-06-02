@@ -38,7 +38,9 @@ enum class RobotState : uint8_t {
 };
 enum class RobotValue : uint8_t { 
     BLEState, RobotState, // Robot State Variables
-    DriveSpeed, DriveDirection // Driving Variables
+    DriveSpeed, DriveDirection, // Driving Variables
+    ServoTurnHead, ServoTiltHead, ServoArmLeft, ServoHandLeft, ServoArmRight, ServoHandRight, // Servo Variables
+    EyeColor, EyeStyle // Eye Variables
 };
 
 #endif

@@ -3,6 +3,7 @@
 #include <RPC.h>
 #include <ArduinoBLE.h>
 
+void validateAuthenticationArray(uint32_t authentication_array);
 void synchronizeRobotValues(RobotValue robot_value, int16_t data) {
   RPC.call("setRobotValue", (uint8_t) robot_value, data);
 }
@@ -11,6 +12,7 @@ void synchronizeRobotValues(RobotValue robot_value, int16_t data) {
 
 BLEState ble_state = BLEState::Advertising;
 RobotState robot_state = RobotState::Disconnected;
+uint32_t authentication_array = 0;
 
 void BluetoothLE::onConnect(BLEDevice central) {
   Serial.print("Bluetooth® Low Energy connected to central: ");
@@ -43,4 +45,8 @@ void loop() {
   if (RPC.available()) {
     Serial.print((char) RPC.read());
   }
+}
+
+void validateAuthenticationArray(uint32_t authentication_array) {
+
 }

@@ -42,13 +42,36 @@ void setRobotValue(uint8_t robot_value, int16_t data) {
       break;
     case RobotValue::DriveSpeed:
       cur_drive_speed = data;
-      Servos::write(Servos::TURN_HEAD, max(min(data, 180), 0));
       RPC.print("Drive Speed changed to "); /* EXPERIMENTAL */
-    break;
+      break;
     case RobotValue::DriveDirection:
       cur_drive_direction = data;
       RPC.print("Drive Direcion changed to "); /* EXPERIMENTAL */
-    break;
+      break;
+    case RobotValue::ServoTurnHead:
+      Servos::write(Servos::TURN_HEAD, max(min(data, 180), 0));
+      RPC.print("Servo turn head to "); /* EXPERIMENTAL */
+      break;
+    case RobotValue::ServoTiltHead:
+      Servos::write(Servos::TILT_HEAD, max(min(data, 180), 0));
+      RPC.print("Servo tilt head to "); /* EXPERIMENTAL */
+      break;
+    case RobotValue::ServoArmLeft:
+      Servos::write(Servos::ARM_LEFT, max(min(data, 180), 0));
+      RPC.print("Servo arm left to "); /* EXPERIMENTAL */
+      break;
+    case RobotValue::ServoHandLeft:
+      Servos::write(Servos::HAND_LEFT, max(min(data, 180), 0));
+      RPC.print("Servo hand left to "); /* EXPERIMENTAL */
+      break;
+    case RobotValue::ServoArmRight:
+      Servos::write(Servos::ARM_RIGHT, max(min(data, 180), 0));
+      RPC.print("Servo arm right to "); /* EXPERIMENTAL */
+      break;
+    case RobotValue::ServoHandRight:
+      Servos::write(Servos::HAND_RIGHT, max(min(data, 180), 0));
+      RPC.print("Servo hand right to "); /* EXPERIMENTAL */
+      break;
   }
   RPC.println(data); /* EXPERIMENTAL */
   setEyeStates(); /* EXPERIMENTAL */
