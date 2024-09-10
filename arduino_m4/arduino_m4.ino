@@ -1,4 +1,4 @@
-#include "C:/Users/Jonas/Documents/GitHub/walle/arduino_common/definitions.hpp" // Change according to source-path
+#include "F:/GitHub/walle/arduino_common/definitions.hpp" // Change according to source-path
 
 #include <RPC.h>
 
@@ -15,6 +15,7 @@ int16_t cur_drive_direction = 0;
 void setup() {
   RPC.begin();
   RPC.bind("setRobotValue", setRobotValue);
+  RPC.bind("setEyePixelDirect", Eyes::setPixelDirect);
   pinMode(BLE_STATUS_LED_PIN, OUTPUT);
   digitalWrite(BLE_STATUS_LED_PIN, 0);
   pinMode(BLE_PAIR_BUTTON_PIN, INPUT_PULLUP);

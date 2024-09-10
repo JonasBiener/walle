@@ -3,33 +3,29 @@
 #include <RPC.h>
 #include <ArduinoBLE.h>
 
-void validateAuthenticationArray(uint32_t authentication_array);
-void synchronizeRobotValues(RobotValue robot_value, int16_t data) {
-  RPC.call("setRobotValue", (uint8_t) robot_value, data);
-}
+void synchronizeRobotValues(RobotValue robot_value, int16_t data);
+void changeBLEState(BLEState state);
+void changeRobotState(RobotState state);
 
+#include "authentication.hpp" // Handles user-authentication
 #include "bluetoothLE.hpp" // Defines BLE service-structure and characteristics
 
 BLEState ble_state = BLEState::Advertising;
 RobotState robot_state = RobotState::Disconnected;
-uint32_t authentication_array = 0;
 
 void BluetoothLE::onConnect(BLEDevice central) {
   Serial.print("Bluetooth® Low Energy connected to central: ");
   Serial.println(central.address());
-  ble_state = BLEState::Connected;
-  robot_state = RobotState::Running;
-  synchronizeRobotValues(RobotValue::BLEState, (int16_t) ble_state);
-  synchronizeRobotValues(RobotValue::RobotState, (int16_t) robot_state);
+  changeBLEState(BLEState::Connected);
+  changeRobotState(RobotState::Authentication);
+  Authentication::initiateAuthentication();
 }
 
 void BluetoothLE::onDisconnect(BLEDevice central) {
   Serial.print("Bluetooth® Low Energy disconnected from central: ");
   Serial.println(central.address());
-  ble_state = BLEState::Advertising;
-  robot_state = RobotState::Disconnected;
-  synchronizeRobotValues(RobotValue::BLEState, (int16_t) ble_state);
-  synchronizeRobotValues(RobotValue::RobotState, (int16_t) robot_state);
+  changeBLEState(BLEState::Advertising);
+  changeRobotState(RobotState::Disconnected);
 }
 
 void setup() {
@@ -49,4 +45,18 @@ void loop() {
 
 void validateAuthenticationArray(uint32_t authentication_array) {
 
+}
+
+void synchronizeRobotValues(RobotValue robot_value, int16_t data) {
+  RPC.call("setRobotValue", (uint8_t) robot_value, data);
+}
+
+void changeBLEState(BLEState state) {
+  ble_state = state;
+  synchronizeRobotValues(RobotValue::BLEState, (int16_t) state);
+}
+
+void changeRobotState(RobotState state) {
+  robot_state = state;
+  synchronizeRobotValues(RobotValue::RobotState, (int16_t) state);
 }

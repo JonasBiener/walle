@@ -1,5 +1,4 @@
-#ifndef DEFINITIONS_HPP
-#define DEFINITIONS_HPP
+#pragma once
 
 /* USER INTERFACE */
 #define BLE_PAIR_BUTTON_PIN 22
@@ -42,5 +41,3 @@ enum class RobotValue : uint8_t {
     ServoTurnHead, ServoTiltHead, ServoArmLeft, ServoHandLeft, ServoArmRight, ServoHandRight, // Servo Variables
     EyeColor, EyeStyle // Eye Variables
 };
-
-#endif

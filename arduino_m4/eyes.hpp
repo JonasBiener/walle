@@ -61,4 +61,8 @@ namespace Eyes {
     analogWrite(EYE_GREEN_PIN, green_value);
   }
 
+  void setPixelDirect(uint8_t pixel_id, uint8_t pixel_color) {
+    RPC.println("Set Eye-Pixel No. " + String(pixel_id) + " to Color No. " + String(pixel_color));
+  }
+
 }

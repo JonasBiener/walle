@@ -7,13 +7,17 @@
 
 namespace BluetoothLE {
 
+  /* AUTHENTICATION SERVICE */
   BLEService authenticaton_service("98bb0c51-1d1b-4100-98b7-f2b494c1d6e3");
   BLEUnsignedIntCharacteristic authentication_array_characteristic("d37c30a4-16c4-4106-87b2-20eb0a234b3a", BLERead | BLEWrite);
   BLEDescriptor authentication_array_descriptor("b0ffce1a-dd7a-4053-8d5d-08a037ff20a2", "Authentication Array");
-  void onAuthenticationArrayCharacteristicChange(BLEDevice, BLECharacteristic) { validateAuthenticationArray(authentication_array_characteristic.value()); }
   BLEShortCharacteristic authentication_confirm_characteristic("38ded87d-8807-4262-aba9-01f5d9a01a20", BLERead);
   BLEDescriptor authentication_confirm_descriptor("e2c078f2-320f-4733-accb-30ade02586a9", "Authentication Confirmed");
-  void setAuthenticationArrayConfirmCharacteristic(int16_t value) { authentication_confirm_characteristic.writeValue(value); }
+  
+  void onAuthenticationArrayCharacteristicChange(BLEDevice, BLECharacteristic) { 
+    uint8_t is_valid = Authentication::authenticateUser(authentication_array_characteristic.value());
+    authentication_confirm_characteristic.writeValue(is_valid);
+  }
   
   void buildAuthenticationService() {
     authentication_array_characteristic.addDescriptor(authentication_array_descriptor);
@@ -26,6 +30,7 @@ namespace BluetoothLE {
     BLE.addService(authenticaton_service);
   }
   
+  /* DRIVE SERVICE */
   BLEService drive_service("6d4d2d45-c51b-4034-bd72-4d134d8d8f9e");
   BLEShortCharacteristic drive_speed_characteristic("e92ab9ad-e970-44ca-b78a-0708fe306c3c", BLERead | BLEWrite);
   BLEDescriptor drive_speed_descriptor("cf57dcfb-4239-45ae-8715-4551d2852611", "Driving Speed");
@@ -46,6 +51,7 @@ namespace BluetoothLE {
     BLE.addService(drive_service);
   }
 
+  /* SERVO SERVICE */
   BLEService servo_service("2dcc1369-d461-4dfe-b9e7-f91521d0315d");
   BLEShortCharacteristic servo_turn_head_characteristic("47479496-50d5-4072-ab21-f09bfd5a317c", BLERead | BLEWrite);
   BLEDescriptor servo_turn_head_descriptor("38c0622e-db0e-44d1-abed-aec424b66a70", "Turn Head Servo");
@@ -94,6 +100,7 @@ namespace BluetoothLE {
     BLE.addService(servo_service);
   }
 
+  /* EYE SERVICE */
   BLEService eye_service("770e772d-3633-49fb-8345-997d2a0d3933");
   BLEShortCharacteristic eye_color_characteristic("79888994-2b3f-400d-b6bf-370bac7afb6f", BLERead | BLEWrite);
   BLEDescriptor eye_color_descriptor("76fd5471-cedf-4c27-a8dd-b5e86d926583", "Eye Color");
@@ -124,9 +131,10 @@ namespace BluetoothLE {
     }
     BLE.setLocalName("WALL-E");
     BLE.setDeviceName("RoCCI e.V.");
-    BLE.setAdvertisedService(drive_service);
+    // BLE.setAdvertisedService(drive_service);
     BLE.setEventHandler(BLEConnected, onConnect);
     BLE.setEventHandler(BLEDisconnected, onDisconnect);
+    buildAuthenticationService();
     buildDriveService();
     buildServoService();
     buildEyeService();
