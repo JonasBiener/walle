@@ -1,3 +1,7 @@
+html {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 dialog::backdrop {
     backdrop-filter: brightness(50%) blur(10px) ;
 }

@@ -18,12 +18,15 @@
     <div id="content" class="blurred">
         <h1>WALL-E Control Example</h1>
         <p><button id="disconnectButton">Disconnect</button></p>
-        <p>Servo:</p> 
-        <p><input type="range" name="speed" id="speedInput" min="0" max="180" value="90"></p>
-        <p id="speedValue">0.0</p>
+        <div id="joyDiv" style="width:200px;height:200px;margin-bottom:20px;"></div>
     </div>
 
-    <!--<script src="control.js" type="module"></script>-->
+    <script>
+        var debug = true;
+    </script>
+
+    <script src="joy.js"></script>
     <script src="interface.js" type="module"></script>
+
 </body>
 </html>

@@ -48,3 +48,14 @@ async function performConnect() {
 
 const disconnectButton = document.getElementById("disconnectButton");
 disconnectButton.onclick = () => connection.disconnectBLE();
+
+new JoyStick('joyDiv', 
+    {
+        internalFillColor: "grey",
+        internalLineWidth: 2,
+        internalStrokeColor: "black",
+        externalLineWidth: 2,
+        externalStrokeColor: "black",
+        autoReturnToCenter: true
+    }, (stickData) => control.updateDriveValues(stickData.x, stickData.y)
+);

@@ -9,6 +9,7 @@ export let driveDirectionCharacteristic;
 
 let bluetoothDevice;
 let bluetoothServer;
+let bluetoothWriteInProgress = false;
 
 function onDisconnectBLE() {}
 
@@ -17,49 +18,49 @@ export function setOnDisconnectBLE(func) {
 }
 
 export async function discoverBLE() {
-    /* DEBUGGING */ console.log("Discovering Devices");
+    console.log("Discovering Devices");
     try {
         let options = {filters: [
             {services: [DRIVE_SERVICE]}
         ]};
         bluetoothDevice = await navigator.bluetooth.requestDevice(options);
-        /* DEBUGGING */ console.log("> Name: " + bluetoothDevice.name);
-        /* DEBUGGING */ console.log("> ID: " + bluetoothDevice.id);
-        /* DEBUGGING */ console.log("> Connected: " + bluetoothDevice.gatt.connected);
+        if (debug) console.log("> Name: " + bluetoothDevice.name);
+        if (debug) console.log("> ID: " + bluetoothDevice.id);
+        if (debug) console.log("> Connected: " + bluetoothDevice.gatt.connected);
     } catch (error) {
-        /* DEBUGGING */ console.warn("ERROR: " + error);
+        console.warn("ERROR: " + error);
         throw "Could not discover devices";
     }
 }
 
 export async function connectBLE() {
-    /* DEBUGGING */ console.log("Connecting");
+    console.log("Connecting");
     try {
         bluetoothServer = await bluetoothDevice.gatt.connect();
         bluetoothDevice.addEventListener("gattserverdisconnected", () => onDisconnectBLE());
-        /* DEBUGGING */ console.log("> Connected to: " + bluetoothServer.device.id);
-        /* DEBUGGING */ console.log("> Connected: " + bluetoothServer.connected);
+        if (debug) console.log("> Connected to: " + bluetoothServer.device.id);
+        if (debug) console.log("> Connected: " + bluetoothServer.connected);
     } catch (error) {
-        /* DEBUGGING */ console.warn("ERROR: " + error);
+        console.warn("ERROR: " + error);
         throw "Could not connect to device";
     }
 }
 
 export function disconnectBLE() {
-    /* DEBUGGING */ console.log("Disconnecting");
+    console.log("Disconnecting");
     bluetoothDevice.gatt.disconnect();
-    /* DEBUGGING */ console.log("> ID: " + bluetoothDevice.id);
+    if (debug) console.log("> ID: " + bluetoothDevice.id);
 }
 
 export async function discoverServicesAndCharacteristicsBLE() {
-    /* DEBUGGING */ console.log("Discovering Services and Characteristics");
+   console.log("Discovering Services and Characteristics");
     try {
         let primaryServices = await bluetoothServer.getPrimaryServices();
         for (const service of primaryServices) {
-            /* DEBUGGING */ console.log("> Service: " + service.uuid);
+            if (debug) console.log("> Service: " + service.uuid);
             let characteristics = await service.getCharacteristics();
             for (const characteristic of characteristics) {
-                /* DEBUGGING */ console.log("> Characteristic: " + characteristic.uuid);
+                if (debug) console.log("> Characteristic: " + characteristic.uuid);
                 switch (service.uuid) {
                     case DRIVE_SERVICE:
                         switch (characteristic.uuid) {
@@ -74,34 +75,36 @@ export async function discoverServicesAndCharacteristicsBLE() {
                 }
             } 
         }
-        /* DEBUGGING */ console.log("Connection established");
+        console.log("Connection established");
     } catch (error) {
-        /* DEBUGGING */ console.warn("ERROR: " + error);
+        console.warn("ERROR: " + error);
         throw "Could not discover services and characteristics";
     }    
 }
 
 export async function readCharacteristicBLE(characteristic) {
-    /* DEBUGGING */ console.log("Reading " + characteristic.uuid);
+    if (debug) console.log("Reading " + characteristic.uuid);
     try {
         let binary_buffer = await characteristic.readValue();
         let binary_value = new Int16Array(binary_buffer.buffer);
         let value = Number(binary_value);
-        /* DEBUGGING */ console.log("> Value: " + value);
+        if (debug) console.log("> Value: " + value);
         return value;
     } catch (error) {
-        /* DEBUGGING */ console.warn("ERROR: " + error);
+        if (debug) console.warn("ERROR: " + error);
     }
 }
 
 export async function writeCharacteristicBLE(characteristic, value) {
-    debugger;
-    /* DEBUGGING */ console.log("Changing " + characteristic.uuid);
+    if (bluetoothWriteInProgress) return;
+    if (debug) console.log("Changing " + characteristic.uuid);
     try {
+        bluetoothWriteInProgress = true;
         let binary_buffer = new Int16Array([value]);
         await characteristic.writeValue(binary_buffer.buffer);
-        /* DEBUGGING */ console.log("> Value: " + value);
+        bluetoothWriteInProgress = false;
+        if (debug) console.log("> Value: " + value);
     } catch (error) {
-        /* DEBUGGING */ console.warn("ERROR: " + error);
+        if (debug) console.warn("ERROR: " + error);
     }
 }

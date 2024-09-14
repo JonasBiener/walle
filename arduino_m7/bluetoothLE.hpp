@@ -8,27 +8,27 @@
 namespace BluetoothLE {
 
   /* AUTHENTICATION SERVICE */
-  BLEService authenticaton_service("98bb0c51-1d1b-4100-98b7-f2b494c1d6e3");
-  BLEUnsignedIntCharacteristic authentication_array_characteristic("d37c30a4-16c4-4106-87b2-20eb0a234b3a", BLERead | BLEWrite);
-  BLEDescriptor authentication_array_descriptor("b0ffce1a-dd7a-4053-8d5d-08a037ff20a2", "Authentication Array");
-  BLEShortCharacteristic authentication_confirm_characteristic("38ded87d-8807-4262-aba9-01f5d9a01a20", BLERead);
-  BLEDescriptor authentication_confirm_descriptor("e2c078f2-320f-4733-accb-30ade02586a9", "Authentication Confirmed");
+  // BLEService authenticaton_service("98bb0c51-1d1b-4100-98b7-f2b494c1d6e3");
+  // BLEUnsignedIntCharacteristic authentication_array_characteristic("d37c30a4-16c4-4106-87b2-20eb0a234b3a", BLERead | BLEWrite);
+  // BLEDescriptor authentication_array_descriptor("b0ffce1a-dd7a-4053-8d5d-08a037ff20a2", "Authentication Array");
+  // BLEShortCharacteristic authentication_confirm_characteristic("38ded87d-8807-4262-aba9-01f5d9a01a20", BLERead);
+  // BLEDescriptor authentication_confirm_descriptor("e2c078f2-320f-4733-accb-30ade02586a9", "Authentication Confirmed");
   
-  void onAuthenticationArrayCharacteristicChange(BLEDevice, BLECharacteristic) { 
-    uint8_t is_valid = Authentication::authenticateUser(authentication_array_characteristic.value());
-    authentication_confirm_characteristic.writeValue(is_valid);
-  }
+  // void onAuthenticationArrayCharacteristicChange(BLEDevice, BLECharacteristic) { 
+  //   uint8_t is_valid = Authentication::authenticateUser(authentication_array_characteristic.value());
+  //   authentication_confirm_characteristic.writeValue(is_valid);
+  // }
   
-  void buildAuthenticationService() {
-    authentication_array_characteristic.addDescriptor(authentication_array_descriptor);
-    authentication_array_characteristic.setEventHandler(BLEWritten, onAuthenticationArrayCharacteristicChange);
-    authentication_array_characteristic.setValue(0);
-    drive_service.addCharacteristic(authentication_array_characteristic);
-    authentication_confirm_characteristic.addDescriptor(authentication_confirm_descriptor);
-    authentication_confirm_characteristic.setValue(0);
-    drive_service.addCharacteristic(authentication_confirm_characteristic);
-    BLE.addService(authenticaton_service);
-  }
+  // void buildAuthenticationService() {
+  //   authentication_array_characteristic.addDescriptor(authentication_array_descriptor);
+  //   authentication_array_characteristic.setEventHandler(BLEWritten, onAuthenticationArrayCharacteristicChange);
+  //   authentication_array_characteristic.setValue(0);
+  //   authenticaton_service.addCharacteristic(authentication_array_characteristic);
+  //   authentication_confirm_characteristic.addDescriptor(authentication_confirm_descriptor);
+  //   authentication_confirm_characteristic.setValue(0);
+  //   authenticaton_service.addCharacteristic(authentication_confirm_characteristic);
+  //   BLE.addService(authenticaton_service);
+  // }
   
   /* DRIVE SERVICE */
   BLEService drive_service("6d4d2d45-c51b-4034-bd72-4d134d8d8f9e");
@@ -76,50 +76,50 @@ namespace BluetoothLE {
     servo_turn_head_characteristic.addDescriptor(servo_turn_head_descriptor);
     servo_turn_head_characteristic.setEventHandler(BLEWritten, onServoTurnHeadChange);
     servo_turn_head_characteristic.setValue(SERVO_TURN_HEAD_INITIAL);
-    drive_service.addCharacteristic(servo_turn_head_characteristic);
+    servo_service.addCharacteristic(servo_turn_head_characteristic);
     servo_tilt_head_characteristic.addDescriptor(servo_tilt_head_descriptor);
     servo_tilt_head_characteristic.setEventHandler(BLEWritten, onServoTiltHeadChange);
     servo_tilt_head_characteristic.setValue(SERVO_TILT_HEAD_INITIAL);
-    drive_service.addCharacteristic(servo_tilt_head_characteristic);
+    servo_service.addCharacteristic(servo_tilt_head_characteristic);
     servo_arm_left_characteristic.addDescriptor(servo_arm_left_descriptor);
     servo_arm_left_characteristic.setEventHandler(BLEWritten, onServoArmLeftChange);
     servo_arm_left_characteristic.setValue(SERVO_ARM_LEFT_INITIAL);
-    drive_service.addCharacteristic(servo_arm_left_characteristic);
+    servo_service.addCharacteristic(servo_arm_left_characteristic);
     servo_hand_left_characteristic.addDescriptor(servo_hand_left_descriptor);
     servo_hand_left_characteristic.setEventHandler(BLEWritten, onServoHandLeftChange);
     servo_hand_left_characteristic.setValue(SERVO_HAND_LEFT_INITIAL);
-    drive_service.addCharacteristic(servo_hand_left_characteristic);
+    servo_service.addCharacteristic(servo_hand_left_characteristic);
     servo_arm_right_characteristic.addDescriptor(servo_arm_right_descriptor);
     servo_arm_right_characteristic.setEventHandler(BLEWritten, onServoArmRightChange);
     servo_arm_right_characteristic.setValue(SERVO_ARM_RIGHT_INITIAL);
-    drive_service.addCharacteristic(servo_arm_right_characteristic);
+    servo_service.addCharacteristic(servo_arm_right_characteristic);
     servo_hand_right_characteristic.addDescriptor(servo_hand_right_descriptor);
     servo_hand_right_characteristic.setEventHandler(BLEWritten, onServoHandRightChange);
     servo_hand_right_characteristic.setValue(SERVO_HAND_RIGHT_INITIAL);
-    drive_service.addCharacteristic(servo_hand_right_characteristic);
+    servo_service.addCharacteristic(servo_hand_right_characteristic);
     BLE.addService(servo_service);
   }
 
   /* EYE SERVICE */
-  BLEService eye_service("770e772d-3633-49fb-8345-997d2a0d3933");
-  BLEShortCharacteristic eye_color_characteristic("79888994-2b3f-400d-b6bf-370bac7afb6f", BLERead | BLEWrite);
-  BLEDescriptor eye_color_descriptor("76fd5471-cedf-4c27-a8dd-b5e86d926583", "Eye Color");
-  void onEyeColorChange(BLEDevice, BLECharacteristic);
-  BLEShortCharacteristic eye_style_characteristic("3e8ebb25-6370-493e-8d22-2bb12f45ad57", BLERead | BLEWrite);
-  BLEDescriptor eye_style_descriptor("c8fc6255-0ae1-4b08-85c6-116a280c7c1e", "Eye Style");
-  void onEyeStyleChange(BLEDevice, BLECharacteristic);
+  // BLEService eye_service("770e772d-3633-49fb-8345-997d2a0d3933");
+  // BLEShortCharacteristic eye_color_characteristic("79888994-2b3f-400d-b6bf-370bac7afb6f", BLERead | BLEWrite);
+  // BLEDescriptor eye_color_descriptor("76fd5471-cedf-4c27-a8dd-b5e86d926583", "Eye Color");
+  // void onEyeColorChange(BLEDevice, BLECharacteristic);
+  // BLEShortCharacteristic eye_style_characteristic("3e8ebb25-6370-493e-8d22-2bb12f45ad57", BLERead | BLEWrite);
+  // BLEDescriptor eye_style_descriptor("c8fc6255-0ae1-4b08-85c6-116a280c7c1e", "Eye Style");
+  // void onEyeStyleChange(BLEDevice, BLECharacteristic);
 
-  void buildEyeService() {
-    eye_color_characteristic.addDescriptor(eye_color_descriptor);
-    eye_color_characteristic.setEventHandler(BLEWritten, onEyeColorChange);
-    eye_color_characteristic.setValue(0);
-    eye_service.addCharacteristic(eye_color_characteristic);
-    eye_style_characteristic.addDescriptor(eye_style_descriptor);
-    eye_style_characteristic.setEventHandler(BLEWritten, onEyeStyleChange);
-    eye_style_characteristic.setValue(0);
-    eye_service.addCharacteristic(eye_style_characteristic);
-    BLE.addService(eye_service);
-  }
+  // void buildEyeService() {
+  //   eye_color_characteristic.addDescriptor(eye_color_descriptor);
+  //   eye_color_characteristic.setEventHandler(BLEWritten, onEyeColorChange);
+  //   eye_color_characteristic.setValue(0);
+  //   eye_service.addCharacteristic(eye_color_characteristic);
+  //   eye_style_characteristic.addDescriptor(eye_style_descriptor);
+  //   eye_style_characteristic.setEventHandler(BLEWritten, onEyeStyleChange);
+  //   eye_style_characteristic.setValue(0);
+  //   eye_service.addCharacteristic(eye_style_characteristic);
+  //   BLE.addService(eye_service);
+  // }
 
   void onConnect(BLEDevice);
   void onDisconnect(BLEDevice);
@@ -134,11 +134,12 @@ namespace BluetoothLE {
     // BLE.setAdvertisedService(drive_service);
     BLE.setEventHandler(BLEConnected, onConnect);
     BLE.setEventHandler(BLEDisconnected, onDisconnect);
-    buildAuthenticationService();
+    // buildAuthenticationService();
     buildDriveService();
     buildServoService();
-    buildEyeService();
+    // buildEyeService();
     BLE.advertise();
+    changeBLEState(BLEState::Advertising);
     RPC.println("Bluetooth® Low Energy initialized.");
   }
 

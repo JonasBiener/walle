@@ -17,6 +17,12 @@
 #define SERVO_HAND_LEFT_PIN 7
 #define SERVO_ARM_RIGHT_PIN 6
 #define SERVO_HAND_RIGHT_PIN 3
+#define SERVO_TURN_HEAD_SLEEP 90
+#define SERVO_TILT_HEAD_SLEEP 90
+#define SERVO_ARM_LEFT_SLEEP 90
+#define SERVO_HAND_LEFT_SLEEP 90
+#define SERVO_ARM_RIGHT_SLEEP 90
+#define SERVO_HAND_RIGHT_SLEEP 90
 #define SERVO_TURN_HEAD_INITIAL 90
 #define SERVO_TILT_HEAD_INITIAL 90
 #define SERVO_ARM_LEFT_INITIAL 90
@@ -30,7 +36,7 @@
 
 /* STATES */
 enum class BLEState : uint8_t { 
-    Advertising, Connecting, Connected 
+    Initial, Advertising, Connected 
 };
 enum class RobotState : uint8_t { 
     Disconnected, Authentication, Running, Paused, Error 

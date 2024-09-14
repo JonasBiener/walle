@@ -10,15 +10,15 @@ void changeRobotState(RobotState state);
 #include "authentication.hpp" // Handles user-authentication
 #include "bluetoothLE.hpp" // Defines BLE service-structure and characteristics
 
-BLEState ble_state = BLEState::Advertising;
+BLEState ble_state = BLEState::Initial;
 RobotState robot_state = RobotState::Disconnected;
 
 void BluetoothLE::onConnect(BLEDevice central) {
   Serial.print("Bluetooth® Low Energy connected to central: ");
   Serial.println(central.address());
   changeBLEState(BLEState::Connected);
-  changeRobotState(RobotState::Authentication);
-  Authentication::initiateAuthentication();
+  changeRobotState(RobotState::Running);
+  // Authentication::initiateAuthentication();
 }
 
 void BluetoothLE::onDisconnect(BLEDevice central) {
@@ -41,10 +41,6 @@ void loop() {
   if (RPC.available()) {
     Serial.print((char) RPC.read());
   }
-}
-
-void validateAuthenticationArray(uint32_t authentication_array) {
-
 }
 
 void synchronizeRobotValues(RobotValue robot_value, int16_t data) {
