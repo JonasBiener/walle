@@ -8,23 +8,26 @@
   let driveDirectionValue = $state(0);
 </script>
 
-{#if !isConnected()}
+<Wrapper 
+  connectButtonAction={!isConnected() ? performConnect : performDisconnect} 
+  connectButtonDisabled={!isConnected() ? isConnecting() : false} 
+  connectButtonText={!isConnected() ? "Activate" : "Deactivate"} 
+  statusColor={!isConnected() ? "text-danger" : "text-success"} 
+  statusText={!isConnected() ? "Inactive" : "Active"} 
+  favicon={!isConnected() ? "/walleBox.ico" : "/walleActive.ico"}>
 
-<Wrapper connectButtonAction={performConnect} connectButtonDisabled={isConnecting()} connectButtonText={"Connect"} statusColor={connectStatusColor} statusText={connectionMessage()}>
+  {#if !isConnected()}
+
   <h1 class="fs-4 card-title fw-bold mb-4 text-center">WALL-E Controller</h1>
-  <p class="card-subtitle text-center">Remote Control via the Web Bluetooth API</p>
-</Wrapper>
+  <p class="card-subtitle text-center">Remote Control using WebSockets</p>
 
-{:else}
+  {:else}
 
-<Wrapper connectButtonAction={performDisconnect} connectButtonDisabled={false} connectButtonText={"Disconnect"} statusColor={"text-success"} statusText={"Connected"}>
   <label for="customRange3" class="form-label">Driving Speed: {driveSpeedValue}</label>
   <input type="range" class="form-range" min="-100" max="100" bind:value={driveSpeedValue}>
   <label for="customRange3" class="form-label">Driving Direction: {driveDirectionValue}</label>
   <input type="range" class="form-range" min="-100" max="100" bind:value={driveDirectionValue}>
+
+  {/if}
+
 </Wrapper>
-
-{/if}
-
-
-

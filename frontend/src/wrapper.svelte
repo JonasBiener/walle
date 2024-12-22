@@ -1,13 +1,10 @@
 <script lang="ts">
-    import { isConnected } from "./lib/connection.svelte";
-    let { connectButtonAction, connectButtonDisabled, connectButtonText, statusColor, statusText, children } = $props();
-    const stateFavicon = $derived(isConnected() ? "/public/walleActive.ico" : "/public/walleBox.ico");
-    const stateTitle = $derived(isConnected() ? "Active" : "Inactive");
+    let { connectButtonAction, connectButtonDisabled, connectButtonText, statusColor, statusText, favicon, children } = $props();
 </script>
 
 <svelte:head>
-  <link rel="icon" type="image/svg" href="{stateFavicon}?a=1"/>
-  <title>WALL-E {stateTitle} - RoCCI e.V.</title>
+  <link rel="icon" type="image/svg" href="{favicon}?a=1"/>
+  <title>WALL-E {statusText} - RoCCI e.V.</title>
 </svelte:head>
 
 <!-- Using Template by nauvalazhar (https://github.com/nauvalazhar/bootstrap-5-login-page) -->
@@ -35,7 +32,7 @@
                     </div>
                 </div>
                 <div class="text-center mt-5 text-muted">
-                    Copyright &copy; 2025 <a href="https://rocci.net/impressum" class="text-reset">RoCCI e.V.</a> - All rights reserved
+                    Copyright &copy; 2025 <a href="https://rocci.net/impressum" target="_blank" class="text-reset">RoCCI e.V.</a> - All rights reserved
                 </div>
             </div>
         </div>
