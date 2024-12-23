@@ -1,3 +1,4 @@
+// @ts-nocheck
 /*
  * Name          : joy.js
  * @author       : Roberto D'Amico (Bobboteck)
@@ -45,7 +46,7 @@
  * SOFTWARE.
  */
 
-let StickStatus =
+export let StickStatus =
 {
     xPosition: 0,
     yPosition: 0,
@@ -70,7 +71,7 @@ let StickStatus =
  *  autoReturnToCenter {Bool} (optional) - Sets the behavior of the stick, whether or not, it should return to zero position when released (Default value is True and return to zero)
  * @param callback {StickStatus} - 
  */
-var JoyStick = (function(container, parameters, callback)
+export var JoyStick = (function(container, parameters, callback)
 {
     parameters = parameters || {};
     var title = (typeof parameters.title === "undefined" ? "joystick" : parameters.title),
@@ -116,18 +117,18 @@ var JoyStick = (function(container, parameters, callback)
     var movedY=centerY;
 
     // Check if the device support the touch or not
-    if("ontouchstart" in document.documentElement)
-    {
-        canvas.addEventListener("touchstart", onTouchStart, false);
-        document.addEventListener("touchmove", onTouchMove, false);
-        document.addEventListener("touchend", onTouchEnd, false);
-    }
-    else
-    {
-        canvas.addEventListener("mousedown", onMouseDown, false);
-        document.addEventListener("mousemove", onMouseMove, false);
-        document.addEventListener("mouseup", onMouseUp, false);
-    }
+    // if("ontouchstart" in document.documentElement)
+    // {
+    //     canvas.addEventListener("touchstart", onTouchStart, false);
+    //     document.addEventListener("touchmove", onTouchMove, false);
+    //     document.addEventListener("touchend", onTouchEnd, false);
+    // }
+    // else
+    // {
+        canvas.addEventListener("pointerdown", onMouseDown, false);
+        document.addEventListener("pointermove", onMouseMove, false);
+        document.addEventListener("pointerup", onMouseUp, false);
+    // }
     // Draw the object
     drawExternal();
     drawInternal();
@@ -184,8 +185,16 @@ var JoyStick = (function(container, parameters, callback)
 
     function onTouchMove(event)
     {
+        event.preventDefault();
         if(pressed === 1 && event.targetTouches[0].target === canvas)
         {
+            // movedX = event.targetTouches[0].offsetX;
+            // movedY = event.targetTouches[0].offsetY;
+            // // Delete canvas
+            // context.clearRect(0, 0, canvas.width, canvas.height);
+            // // Redraw object
+            // drawExternal();
+            // drawInternal();
             movedX = event.targetTouches[0].pageX;
             movedY = event.targetTouches[0].pageY;
             // Manage offset
@@ -196,9 +205,10 @@ var JoyStick = (function(container, parameters, callback)
             }
             else
             {
-                movedX -= canvas.offsetParent.offsetLeft;
-                movedY -= canvas.offsetParent.offsetTop;
+                // movedX -= canvas.offsetParent.offsetLeft;
+                // movedY -= canvas.offsetParent.offsetTop;
             }
+            movedY -= window.scrollY;
             // Delete canvas
             context.clearRect(0, 0, canvas.width, canvas.height);
             // Redraw object
@@ -254,24 +264,32 @@ var JoyStick = (function(container, parameters, callback)
     {
         if(pressed === 1)
         {
-            movedX = event.pageX;
-            movedY = event.pageY;
-            // Manage offset
-            if(canvas.offsetParent.tagName.toUpperCase() === "BODY")
-            {
-                movedX -= canvas.offsetLeft;
-                movedY -= canvas.offsetTop;
-            }
-            else
-            {
-                movedX -= canvas.offsetParent.offsetLeft;
-                movedY -= canvas.offsetParent.offsetTop;
-            }
+            movedX = event.offsetX;
+            movedY = event.offsetY;
             // Delete canvas
             context.clearRect(0, 0, canvas.width, canvas.height);
             // Redraw object
             drawExternal();
             drawInternal();
+            // movedX = event.pageX;
+            // movedY = event.pageY;
+            // // Manage offset
+            // if(canvas.offsetParent.tagName.toUpperCase() === "BODY")
+            // {
+            //     movedX -= canvas.offsetLeft;
+            //     movedY -= canvas.offsetTop;
+            // }
+            // else
+            // {
+            //     movedX -= canvas.offsetParent.offsetLeft;
+            //     movedY -= canvas.offsetParent.offsetTop;
+            // }
+            // movedY -= window.scrollY;
+            // // Delete canvas
+            // context.clearRect(0, 0, canvas.width, canvas.height);
+            // // Redraw object
+            // drawExternal();
+            // drawInternal();
 
             // Set attribute of callback
             StickStatus.xPosition = movedX;

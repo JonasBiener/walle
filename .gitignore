@@ -34,4 +34,5 @@
 .arduino_m7
 .arduino_m4
 .arduino_common
+.docs
 secrets.hpp

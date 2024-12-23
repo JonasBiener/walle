@@ -1,9 +1,14 @@
 let socket: WebSocket;
 
 let isConnectedState = $state(false);
+let lastMessageState = $state("Debug-Log");
 
-export function isConnected() {
+export function isConnected(): boolean {
     return isConnectedState;
+}
+
+export function lastMessage(): string {
+    return lastMessageState;
 }
 
 export function activateConnection() {
@@ -11,6 +16,7 @@ export function activateConnection() {
     socket = new WebSocket("ws://127.0.0.1:8080");
     socket.onmessage = ({ data }) => {
         console.log(data);
+        lastMessageState = data;
     };
     isConnectedState = true;
 }
