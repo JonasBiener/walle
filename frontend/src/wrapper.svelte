@@ -1,5 +1,5 @@
 <script lang="ts">
-    let { connectButtonAction, connectButtonDisabled, connectButtonText, statusColor, statusText, favicon, children } = $props();
+    const { connectButtonAction, connectButtonText, statusColor, statusText, favicon, children } = $props();
 </script>
 
 <svelte:head>
@@ -20,7 +20,7 @@
                     <div class="card-header py-3 border-0">
                         <div class="row">
                             <div class="col-sm-4 text-sm-start text-center mb-sm-0 mb-3">
-                                <button onclick={connectButtonAction} disabled={connectButtonDisabled} class="btn btn-primary ms-auto">{connectButtonText}</button>
+                                <button onclick={connectButtonAction} class="btn btn-primary ms-auto">{connectButtonText}</button>
                             </div>
                             <div class="col-sm m-auto text-center">
                                 Status: <strong class="{statusColor}">{statusText}</strong>

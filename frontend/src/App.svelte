@@ -1,16 +1,12 @@
 <script lang="ts">
   import Wrapper from "./wrapper.svelte";
-  import { performConnect, performDisconnect, connectionMessage, isConnected, isConnecting, isError } from "./lib/connection.svelte";
-
-  const connectStatusColor = $derived(isError() ? "text-danger" : "text-dark");
-
-  let driveSpeedValue = $state(0);
-  let driveDirectionValue = $state(0);
+  import SliderControl from "./SliderControl.svelte";
+  import SwitchControl from "./SwitchControl.svelte";
+  import { activateConnection, deactivateConnection, isConnected } from "./lib/connection.svelte";
 </script>
 
 <Wrapper 
-  connectButtonAction={!isConnected() ? performConnect : performDisconnect} 
-  connectButtonDisabled={!isConnected() ? isConnecting() : false} 
+  connectButtonAction={!isConnected() ? activateConnection : deactivateConnection} 
   connectButtonText={!isConnected() ? "Activate" : "Deactivate"} 
   statusColor={!isConnected() ? "text-danger" : "text-success"} 
   statusText={!isConnected() ? "Inactive" : "Active"} 
@@ -23,10 +19,9 @@
 
   {:else}
 
-  <label for="customRange3" class="form-label">Driving Speed: {driveSpeedValue}</label>
-  <input type="range" class="form-range" min="-100" max="100" bind:value={driveSpeedValue}>
-  <label for="customRange3" class="form-label">Driving Direction: {driveDirectionValue}</label>
-  <input type="range" class="form-range" min="-100" max="100" bind:value={driveDirectionValue}>
+  <SliderControl code={"DSPEED"} name={"Driving Speed"} value={0}></SliderControl>
+  <SliderControl code={"DDIREC"} name={"Driving Direction"} value={0}></SliderControl>
+  <SwitchControl code={"DINVRT"} name={"Invert Driving"} value={false}></SwitchControl>
 
   {/if}
 
