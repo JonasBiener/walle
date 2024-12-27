@@ -15,22 +15,12 @@ bool RobotFilesystem::init() {
   return true;
 }
 
-String RobotFilesystem::readFile(String filename) {
-  String path = String("/ota") + filename;
-  FILE* f = fopen(path.c_str(), "r");
-  if (errno) {
-    Serial.println(String("WARNING: File ") + path + String(" could not be opened"));
-    return "";
+std::unique_ptr<mbed::File> RobotFilesystem::openFile(String filename) {
+  std::unique_ptr<mbed::File> file_ptr{new mbed::File};
+  int errcode = file_ptr->open(&ota, filename.c_str(), O_RDONLY);
+  if (errcode) {
+    Serial.println(String("WARNING: File ") + filename + String(" could not be opened. [ ") + String(strerror(-errcode)) + String(" ]"));
+    return std::unique_ptr<mbed::File>{};
   }
-  String file_content = "";
-  const int buffer_size = 512;
-  char buffer[buffer_size];
-  int size = 0;
-  do {
-    size = fread(buffer, 1, buffer_size, f);
-    // Serial.write(buffer, size);
-    file_content += String(buffer);
-  } while(size == buffer_size);
-  fclose(f);
-  return file_content;
+  return file_ptr;
 }

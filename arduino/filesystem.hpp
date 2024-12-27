@@ -1,21 +1,27 @@
-#pragma once
+#ifndef ROBOT_FILESYSTEM_H
+#define ROBOT_FILESYSTEM_H
 
 #include <Arduino.h>
 #include <QSPIFBlockDevice.h>
 #include <MBRBlockDevice.h>
 #include <FATFileSystem.h>
+#include <File.h>
+#include <memory>
 
 class RobotFilesystem {
+
   public:
 
-  RobotFilesystem();
-  bool init();
-  String readFile(String filename);
+    RobotFilesystem();
+    bool init();
+    std::unique_ptr<mbed::File> openFile(String filename);
 
   private:
 
-  bool fileExists(String filename);
-  mbed::BlockDevice* raw_qspi;
-  mbed::FATFileSystem ota;
-  mbed::MBRBlockDevice ota_data;
+    mbed::BlockDevice* raw_qspi;
+    mbed::FATFileSystem ota;
+    mbed::MBRBlockDevice ota_data;
+
 };
+
+#endif

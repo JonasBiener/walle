@@ -7,7 +7,7 @@
 </script>
 
 <svelte:head>
-  <link rel="icon" type="image/svg" href="{!isConnected() ? "./walleBox.ico" : "./walleActive.ico"}?a=1"/>
+  <link rel="icon" type="image/svg" href="{!isConnected() ? "/walleBox.ico" : "/walleActive.ico"}?a=1"/>
   <title>WALL-E {!isConnected() ? "Inactive" : "Active"} - RoCCI e.V.</title>
 </svelte:head>
 

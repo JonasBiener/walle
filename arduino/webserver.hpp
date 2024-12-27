@@ -1,36 +1,48 @@
-#pragma once
+#ifndef ROBOT_WEBSERVER_H
+#define ROBOT_WEBSERVER_H
 
 #include <Arduino.h>
 #include <WiFi.h>
 #include <ArduinoMDNS.h>
 
 #include "secrets.hpp"
+#include "filesystem.hpp"
 
 class RobotWebServer {
+
   public:
 
-  RobotWebServer();
-  bool init();
-  void logServerStatus();
-  void updateConnection();
-  void updateClient();
-  void respondHTTPRequest(WiFiClient &client, int status_code, String status_description, String header_concat);
-  void respondHTTPRequestStatus(WiFiClient &client, int status_code, String status_description);
-  void respondHTTPRequestContent(WiFiClient &client, int status_code, String status_description, String content_type, String content);
-  void respondGetRequest(WiFiClient &client, String ressource);
-  void respondPostRequest(WiFiClient &client, String ressource);
+    RobotWebServer(RobotFilesystem& file_system_);
+    bool init();
+    void logServerStatus();
+    void updateConnection();
+    void updateClient();
 
   private:
 
-  const bool access_point = false;
-  const char SSID[16] = WIFI_SSID; // "WALL-E Robot";
-  const char PASSWORD[16] = WIFI_PASSWORD; // "rocciwalle";
-  const int IP_ADDRESS[4] = {192, 168, 178, 10}; // {10, 10, 10, 10}
-  const char HOSTNAME[8] = "robot";
+    const bool access_point = false;
+    const char SSID[16] = WIFI_SSID; // "WALL-E Robot";
+    const char PASSWORD[16] = WIFI_PASSWORD; // "rocciwalle";
+    const unsigned char IP_ADDRESS[4] = {192, 168, 178, 10}; // {10, 10, 10, 10};
+    const char HOSTNAME[8] = "robot";
+    const size_t buffer_size = 10000;
+    const int connection_timeout = 2000;
 
-  WiFiServer wifi_server;
-  IPAddress server_ip_address;
-  int status = WL_IDLE_STATUS;
-  WiFiUDP wifi_udp;
-  MDNS mdns;
+    int status = WL_IDLE_STATUS;
+    RobotFilesystem& file_system;
+    WiFiServer wifi_server;
+    IPAddress server_ip_address;
+    WiFiUDP wifi_udp;
+    MDNS mdns;
+      
+    void respondGetRequest(WiFiClient &client, String ressource);
+    void respondRedirect(WiFiClient &client, String target);
+    void respondStartLine(WiFiClient &client, int status_code, String status_description);
+    void respondAddHeader(WiFiClient &client, String header, String value);
+    void respondEndHeaders(WiFiClient &client);
+    void respondDirect(WiFiClient &client, String response);
+    void respondDirect(WiFiClient &client, char* buff, size_t buff_size);
+
 };
+
+#endif
