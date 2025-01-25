@@ -13,7 +13,7 @@ export function lastMessage(): string {
 
 export function activateConnection() {
     if (isConnectedState) alert("Can't activate. The connection is active.");
-    socket = new WebSocket("ws://192.168.178.10:8080");
+    socket = new WebSocket(`ws://${window.location.hostname ? window.location.hostname : "localhost"}:8080`);
     socket.onmessage = ({ data }) => {
         console.log(data);
         lastMessageState = data;

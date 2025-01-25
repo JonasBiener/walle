@@ -83,6 +83,7 @@ void RobotWebServer::updateConnection() {
 void RobotWebServer::updateClient() {
   WiFiClient client = wifi_server.accept();
   if (client) {
+    digitalWrite(9, HIGH); // DEBUG
     Serial.println("new client connected"); // DEBUG
     String currentLine = "";
     String ressource = "";
@@ -124,9 +125,10 @@ void RobotWebServer::updateClient() {
     client.stop();
     Serial.println("client disconnected"); // DEBUG
   }
+  digitalWrite(9, LOW); // DEBUG
 }
 
-void RobotWebServer::respondGetRequest(WiFiClient &client, String ressource) {
+void RobotWebServer::respondGetRequest(WiFiClient& client, String ressource) {
   // Redirect empty path to index.html
   if (ressource == "/") return respondRedirect(client, "/index.html");
   if (ressource == "/favicon.ico") return respondRedirect(client, "/walleBox.ico");
@@ -139,8 +141,7 @@ void RobotWebServer::respondGetRequest(WiFiClient &client, String ressource) {
   respondStartLine(client, 200, "OK");
   // Add content type
   if (ressource.endsWith(".html")) respondAddHeader(client, "Content-Type: ", "text/html");
-  else if (ressource.endsWith(".ico")) respondAddHeader(client, "Content-Type: ", "image/vnd.microsoft.icon");
-  else if (ressource.endsWith(".png")) respondAddHeader(client, "Content-Type: ", "image/png");
+  else if (ressource.endsWith(".svg")) respondAddHeader(client, "Content-Type: ", "image/svg+xml");
   else if (ressource.endsWith(".js")) respondAddHeader(client, "Content-Type: ", "text/javascript");
   else if (ressource.endsWith(".css")) respondAddHeader(client, "Content-Type: ", "text/css");
   else respondAddHeader(client, "Content-Type: ", "text/plain");
@@ -151,7 +152,7 @@ void RobotWebServer::respondGetRequest(WiFiClient &client, String ressource) {
   // End headers
   respondEndHeaders(client);
   // Stream file
-  int read_size = 0;
+  unsigned int read_size = 0;
   char buffer[buffer_size];
   do {
     read_size = file->read(buffer, buffer_size);
@@ -159,28 +160,28 @@ void RobotWebServer::respondGetRequest(WiFiClient &client, String ressource) {
   } while (read_size == buffer_size);
 }
 
-void RobotWebServer::respondRedirect(WiFiClient &client, String target) {
+void RobotWebServer::respondRedirect(WiFiClient& client, String target) {
   respondStartLine(client, 302, "Found");
   respondDirect(client, String("Location: ") + target);
   respondEndHeaders(client);
 }
 
-void RobotWebServer::respondStartLine(WiFiClient &client, int status_code, String status_description) {
+void RobotWebServer::respondStartLine(WiFiClient& client, int status_code, String status_description) {
   client.println(String("HTTP/1.1 ") + String(status_code) + String(" ") + status_description);
 }
 
-void RobotWebServer::respondAddHeader(WiFiClient &client, String header, String value) {
+void RobotWebServer::respondAddHeader(WiFiClient& client, String header, String value) {
   client.println(header + value);
 }
 
-void RobotWebServer::respondEndHeaders(WiFiClient &client) {
+void RobotWebServer::respondEndHeaders(WiFiClient& client) {
   client.println();
 }
 
-void RobotWebServer::respondDirect(WiFiClient &client, String response) {
+void RobotWebServer::respondDirect(WiFiClient& client, String response) {
   client.print(response);
 }
 
-void RobotWebServer::respondDirect(WiFiClient &client, char* buff, size_t buff_size) {
+void RobotWebServer::respondDirect(WiFiClient& client, char* buff, size_t buff_size) {
   client.write(buff, buff_size);
 }

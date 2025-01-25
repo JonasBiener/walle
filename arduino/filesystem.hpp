@@ -1,5 +1,5 @@
-#ifndef ROBOT_FILESYSTEM_H
-#define ROBOT_FILESYSTEM_H
+#ifndef ROBOT_FILESYSTEM_HPP
+#define ROBOT_FILESYSTEM_HPP
 
 #include <Arduino.h>
 #include <QSPIFBlockDevice.h>

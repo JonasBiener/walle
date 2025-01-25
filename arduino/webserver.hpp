@@ -1,5 +1,5 @@
-#ifndef ROBOT_WEBSERVER_H
-#define ROBOT_WEBSERVER_H
+#ifndef ROBOT_WEBSERVER_HPP
+#define ROBOT_WEBSERVER_HPP
 
 #include <Arduino.h>
 #include <WiFi.h>
@@ -35,13 +35,13 @@ class RobotWebServer {
     WiFiUDP wifi_udp;
     MDNS mdns;
       
-    void respondGetRequest(WiFiClient &client, String ressource);
-    void respondRedirect(WiFiClient &client, String target);
-    void respondStartLine(WiFiClient &client, int status_code, String status_description);
-    void respondAddHeader(WiFiClient &client, String header, String value);
-    void respondEndHeaders(WiFiClient &client);
-    void respondDirect(WiFiClient &client, String response);
-    void respondDirect(WiFiClient &client, char* buff, size_t buff_size);
+    void respondGetRequest(WiFiClient& client, String ressource);
+    void respondRedirect(WiFiClient& client, String target);
+    void respondStartLine(WiFiClient& client, int status_code, String status_description);
+    void respondAddHeader(WiFiClient& client, String header, String value);
+    void respondEndHeaders(WiFiClient& client);
+    void respondDirect(WiFiClient& client, String response);
+    void respondDirect(WiFiClient& client, char* buff, size_t buff_size);
 
 };
 
