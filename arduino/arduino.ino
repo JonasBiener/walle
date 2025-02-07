@@ -16,7 +16,7 @@ void setup() {
   while (!Serial);
 
   Serial.println("Booted up M7");
-  // RPC.begin();
+  RPC.begin();
 
   pinMode(8, OUTPUT); // DEBUG
   pinMode(9, OUTPUT); // DEBUG
@@ -56,16 +56,38 @@ void loop() {
 
 #include <RPC.h>
 
+#include "servos.hpp"
+
 void setup() {
   RPC.println("M4: Booted up M4");
-  // pinMode(8, OUTPUT); 
+  Servos.init();
 }
 
 void loop() {
-  // digitalWrite(8, HIGH);
-  // delay(1000);
-  // digitalWrite(8, LOW);
-  // delay(1000);
+  Servos.write(Servos.turn_head, 0);
+  delay(1000);
+  Servos.write(Servos.tilt_head, 0);
+  delay(1000);
+  Servos.write(Servos.arm_left, 0);
+  delay(1000);
+  Servos.write(Servos.hand_left, 0);
+  delay(1000);
+  Servos.write(Servos.arm_right, 0);
+  delay(1000);
+  Servos.write(Servos.hand_right, 0);
+  delay(1000);
+  Servos.write(Servos.turn_head, 180);
+  delay(1000);
+  Servos.write(Servos.tilt_head, 180);
+  delay(1000);
+  Servos.write(Servos.arm_left, 180);
+  delay(1000);
+  Servos.write(Servos.hand_left, 180);
+  delay(1000);
+  Servos.write(Servos.arm_right, 180);
+  delay(1000);
+  Servos.write(Servos.hand_right, 180);
+  delay(1000);
 }
 
 #endif

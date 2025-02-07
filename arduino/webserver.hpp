@@ -5,7 +5,7 @@
 #include <WiFi.h>
 #include <ArduinoMDNS.h>
 
-#include "secrets.hpp"
+// #include "secrets.hpp"
 #include "filesystem.hpp"
 
 class RobotWebServer {
@@ -20,9 +20,9 @@ class RobotWebServer {
 
   private:
 
-    const bool access_point = false;
-    const char SSID[16] = WIFI_SSID; // "WALL-E Robot";
-    const char PASSWORD[16] = WIFI_PASSWORD; // "rocciwalle";
+    const bool access_point = true;
+    const char SSID[16] = "WALL-E Robot"; // "WALL-E Robot"; WIFI_SSID;
+    const char PASSWORD[16] = "rocciwalle"; // "rocciwalle"; WIFI_PASSWORD;
     const unsigned char IP_ADDRESS[4] = {192, 168, 178, 10}; // {10, 10, 10, 10};
     const char HOSTNAME[8] = "robot";
     const size_t buffer_size = 10000;
