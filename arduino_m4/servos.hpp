@@ -71,12 +71,12 @@ class RobotServos {
 
     // CONSTANTS //
     // Servos: Pin, Minimum Position, Maximum Position, Inverting
-    RestrictedServo turn_head{5, 20, 160, false};
-    RestrictedServo tilt_head{3, 20, 160, true};
-    RestrictedServo arm_left{1, 60, 180, false};
-    RestrictedServo hand_left{4, 0, 180, true};
-    RestrictedServo arm_right{0, 0, 120, true};
-    RestrictedServo hand_right{2, 0, 150, true};
+    RestrictedServo turn_head{2, 0, 180, true};
+    RestrictedServo tilt_head{1, 0, 180, false};
+    RestrictedServo arm_left{0, 0, 180, false};
+    RestrictedServo hand_left{3, 0, 180, false};
+    RestrictedServo arm_right{5, 0, 180, true};
+    RestrictedServo hand_right{4, 0, 180, true};
 
 };
 
